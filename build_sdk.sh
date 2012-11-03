@@ -24,7 +24,6 @@ GNUMAKE=`which gmake`
 
 PATCHES=$CURDIR/patches
 BUILDDIR=$CURDIR/build
-DESTDIR=$CURDIR/dest
 DISTDIR=$CURDIR/dists
 
 
@@ -33,9 +32,7 @@ REPO=refuge-sdk
 SDK_TAG=$(sh -c 'git describe --tags --always 2>/dev/null || echo dev')
 REVISION=$(echo $SDK_TAG | sed -e 's/^$(REPO)-//')
 PKG_VERSION=$(echo $REVISION | tr - .)
-INSTALLDIR=/opt/refuge-sdk
-TARGET=$DESTDIR/$INSTALLDIR
-
+DESTDIR=$CURDIR/dest/refuge-sdk-$PKG_VERSION
 
 . support/env.sh
 . support/versions.sh
@@ -54,12 +51,12 @@ setup()
     echo "==> build Refuge SDK ..."
     mkdir -p $DISTDIR
     mkdir -p $BUILDDIR
-    mkdir -p $TARGET
+    mkdir -p $DESTDIR
 }
 
 clean_openssl()
 {
-    rm -rf $TARGET/openssl
+    rm -rf $DESTDIR/openssl
     rm -rf $BUILDDIR/openssl-$OPENSSL_VER
 }
 
@@ -76,18 +73,18 @@ build_openssl()
     ./Configure no-shared $OPENSSL_PLATFORM
     make
 
-    mkdir -p $TARGET/openssl/lib
-    mv libcrypto.a $TARGET/openssl/lib/
-	mv libssl.a $TARGET/openssl/lib/
+    mkdir -p $DESTDIR/openssl/lib
+    mv libcrypto.a $DESTDIR/openssl/lib/
+	mv libssl.a $DESTDIR/openssl/lib/
 
-    mkdir -p $TARGET/openssl/include/openssl
-    cp -RH include/openssl/*.h $TARGET/openssl/include/openssl/
+    mkdir -p $DESTDIR/openssl/include/openssl
+    cp -RH include/openssl/*.h $DESTDIR/openssl/include/openssl/
 }
 
 clean_otp()
 {
     rm -rf $BUILDDIR/otp_src_$ERLANG_VER
-    rm -rf $TARGET/otp
+    rm -rf $DESTDIR/otp_rel
 }
 
 build_otp()
@@ -98,20 +95,21 @@ build_otp()
     cd $BUILDDIR
     $GUNZIP -c $DISTDIR/$ERLANG_DISTNAME | $TAR xf -
 
+
+    mkdir $DESTDIR/otp_rel
     cd $BUILDDIR/otp_src_$ERLANG_VER
-    ./configure --prefix=$INSTALLDIR/otp \
-                --disable-dynamic-ssl-lib \
-                --with-ssl=$TARGET/openssl $OTP_ENV
-
-    mkdir $TARGET/otp
-    $GNUMAKE DESTDIR=$DESTDIR install
+    ./otp_build autoconf
+    ./otp_build configure \
+        --disable-dynamic-ssl-lib \
+        --with-ssl=$DESTDIR/openssl $OTP_ENV
+    ./otp_build boot -a
+    ./otp_build release -a $DESTDIR/otp_rel
 }
-
 
 clean_nspr()
 {
     rm -rf $BUILDDIR/nspr*
-    rm -rf $TARGET/nspr*
+    rm -rf $DESTDIR/nspr*
 }
 
 
@@ -125,16 +123,16 @@ build_nspr()
 
     cd $BUILDDIR/nspr-$NSPR_VER/mozilla/nsprpub
     ./configure --disable-debug --enable-optimize \
-        --prefix=$INSTALLDIR/nsprpub $NSPR_CONFIGURE_ENV
+        --prefix=$DESTDIR/nsprpub $NSPR_CONFIGURE_ENV
 
     $GNUMAKE all
-    $GNUMAKE DESTDIR=$DESTDIR install
+    $GNUMAKE install
 }
 
 clean_js()
 {
     rm -rf $JSDIR
-    rm -rf $TARGET/js
+    rm -rf $DESTDIR/js
 }
 
 build_js()
@@ -155,14 +153,14 @@ build_js()
 
     env CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" \
         CPPFLAGS="-DXP_UNIX -DJS_C_STRINGS_ARE_UTF8" \
-        ./configure --prefix=$STATICLIBS/js \
+        ./configure --prefix=$DESTDIR/js \
 				    --disable-debug \
 					--enable-optimize \
 					--enable-static \
 					--disable-shared-js \
 					--disable-tests \
 					--with-system-nspr \
-					--with-nspr-prefix=$TARGET/nsprpub && \
+					--with-nspr-prefix=$DESTDIR/nsprpub && \
         $GNUMAKE all
 
     mkdir -p $JS_INCDIR/js
@@ -174,7 +172,7 @@ build_js()
 clean_icu()
 {
     rm -rf $BUILDDIR/icu*
-    rm -rf $TARGET/icu*
+    rm -rf $DESTDIR/icu*
 }
 
 build_icu()
@@ -208,8 +206,8 @@ build_icu()
 		    --disable-extras \
 		    --disable-tests \
 		    --disable-samples \
-		    --prefix=$INSTALLDIR/icu && \
-        $GNUMAKE && $GNUMAKE DESTDIR=$DESTDIR install
+		    --prefix=$DESTDIR/icu && \
+        $GNUMAKE && $GNUMAKE install
 }
 
 build_all()
