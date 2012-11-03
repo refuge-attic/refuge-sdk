@@ -12,18 +12,24 @@ Supported platforms are:
 
 ## Features
 
+The refuge SDK provides
 
-Installation 
-------------
+- Erlang R15B02 statically built with openssl 1.0.1c
+- Spidermonky 1.8.5
+- entop
+- Erica
 
+## Installation 
 
+You can use one of the built release available on the Downloads
+repository:
 
+    https://github.com/refuge/refuge-sdk/downloads
 
 License
 -------
 
-gaffer is available in the public domain (see UNLICENSE). gaffer is also
-optionally available under the MIT License (see LICENSE), meant
+The Refuge SDK is available in the public domain (see UNLICENSE). gaffer
+is also optionally available under the MIT License (see LICENSE), meant
 especially for jurisdictions that do not recognize public domain
 works.
-

@@ -214,30 +214,11 @@ build_icu()
 
 build_all()
 {
-    if [ ! -f $TARGET/openssl/lib/libssl.a]; then
-        clean_openssl
-        build_openssl
-    fi
-
-    if [ ! -f $TARGET/otp/bin/erl ]; then
-        clean_otp
-        build_otp
-    fi
-
-    if [ ! -f $TARGET/nsprpub/lib/libnspr4.a ]; then
-        clean_nspr
-        build_nspr
-    fi
-
-    if [ ! -f $TARGET/js/lib/libjs_static.a ]; then
-        clean_js
-        build_js
-    fi
-
-    if [ ! -f $TARGET/icu/lib/libicui18n.a ]; then
-        clean_icu
-        build_icu
-    fi
+    build_openssl
+    build_otp
+    build_nspr
+    build_js
+    build_icu
 }
 
 
@@ -270,13 +251,17 @@ EOF
 
 
 if [ "x$1" = "x" ]; then
-    build
+    clean_all
+    setup
+    build_all 
+
     exit 0
 fi
 
 case "$1" in
     all)
         shift 1
+        clean_all
         setup
         build_all 
         ;;
