@@ -26,8 +26,7 @@ repository:
 
     https://github.com/refuge/refuge-sdk/downloads
 
-License
--------
+## License
 
 The Refuge SDK is available in the public domain (see UNLICENSE). gaffer
 is also optionally available under the MIT License (see LICENSE), meant
