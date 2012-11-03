@@ -24,3 +24,6 @@ JS_INCDIR=$DESTDIR/js/include
 ICU_VER=4.4.2
 ICU_DISTNAME=icu4c-4_4_2-src.tgz
 ICUDIR=$BUILDDIR/icu_src/icu
+
+# rebar
+REBAR_MASTER=git://github.com/refuge/rebar.git

@@ -9,8 +9,8 @@ if ! test -n "$CURLBIN"; then
     exit 1
 fi
 
-GIT=`which git`
-if ! test -n "$GIT"; then
+GITBIN=`which git`
+if ! test -n "$GITBIN"; then
     echo "Error: git is required. Add it to 'PATH'"
     exit 1
 fi
@@ -32,7 +32,10 @@ REPO=refuge-sdk
 SDK_TAG=$(sh -c 'git describe --tags --always 2>/dev/null || echo dev')
 REVISION=$(echo $SDK_TAG | sed -e 's/^$(REPO)-//')
 PKG_VERSION=$(echo $REVISION | tr - .)
+
+
 DESTDIR=$CURDIR/dest/refuge-sdk-$PKG_VERSION
+LIBSDIR=$DESTDIR/libs
 
 . support/env.sh
 . support/versions.sh
@@ -56,7 +59,7 @@ setup()
 
 clean_openssl()
 {
-    rm -rf $DESTDIR/openssl
+    rm -rf $LIBSDIR/openssl
     rm -rf $BUILDDIR/openssl-$OPENSSL_VER
 }
 
@@ -73,18 +76,18 @@ build_openssl()
     ./Configure no-shared $OPENSSL_PLATFORM
     make
 
-    mkdir -p $DESTDIR/openssl/lib
-    mv libcrypto.a $DESTDIR/openssl/lib/
-	mv libssl.a $DESTDIR/openssl/lib/
+    mkdir -p $LIBSDIR/openssl/lib
+    mv libcrypto.a $LIBSDIR/openssl/lib/
+	mv libssl.a $LIBSDIR/openssl/lib/
 
-    mkdir -p $DESTDIR/openssl/include/openssl
-    cp -RH include/openssl/*.h $DESTDIR/openssl/include/openssl/
+    mkdir -p $LIBSDIR/openssl/include/openssl
+    cp -RH include/openssl/*.h $LIBSDIR/openssl/include/openssl/
 }
 
 clean_otp()
 {
     rm -rf $BUILDDIR/otp_src_$ERLANG_VER
-    rm -rf $DESTDIR/otp_rel
+    rm -rf $LIBSDIR/otp_rel
 }
 
 build_otp()
@@ -98,18 +101,17 @@ build_otp()
 
     mkdir $DESTDIR/otp_rel
     cd $BUILDDIR/otp_src_$ERLANG_VER
-    ./otp_build autoconf
     ./otp_build configure \
         --disable-dynamic-ssl-lib \
-        --with-ssl=$DESTDIR/openssl $OTP_ENV
+        --with-ssl=$LIBSDIR/openssl $OTP_ENV
     ./otp_build boot -a
-    ./otp_build release -a $DESTDIR/otp_rel
+    ./otp_build release -a $LIBSDIR/otp_rel
 }
 
 clean_nspr()
 {
     rm -rf $BUILDDIR/nspr*
-    rm -rf $DESTDIR/nspr*
+    rm -rf $LIBSDIR/nspr*
 }
 
 
@@ -123,7 +125,7 @@ build_nspr()
 
     cd $BUILDDIR/nspr-$NSPR_VER/mozilla/nsprpub
     ./configure --disable-debug --enable-optimize \
-        --prefix=$DESTDIR/nsprpub $NSPR_CONFIGURE_ENV
+        --prefix=$LIBSDIR/nsprpub $NSPR_CONFIGURE_ENV
 
     $GNUMAKE all
     $GNUMAKE install
@@ -132,7 +134,7 @@ build_nspr()
 clean_js()
 {
     rm -rf $JSDIR
-    rm -rf $DESTDIR/js
+    rm -rf $LIBSDIR/js
 }
 
 build_js()
@@ -153,14 +155,14 @@ build_js()
 
     env CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" \
         CPPFLAGS="-DXP_UNIX -DJS_C_STRINGS_ARE_UTF8" \
-        ./configure --prefix=$DESTDIR/js \
+        ./configure --prefix=$LIBSDIR/js \
 				    --disable-debug \
 					--enable-optimize \
 					--enable-static \
 					--disable-shared-js \
 					--disable-tests \
 					--with-system-nspr \
-					--with-nspr-prefix=$DESTDIR/nsprpub && \
+					--with-nspr-prefix=$LIBSDIR/nsprpub && \
         $GNUMAKE all
 
     mkdir -p $JS_INCDIR/js
@@ -172,7 +174,7 @@ build_js()
 clean_icu()
 {
     rm -rf $BUILDDIR/icu*
-    rm -rf $DESTDIR/icu*
+    rm -rf $LIBSDIR/icu*
 }
 
 build_icu()
@@ -206,8 +208,28 @@ build_icu()
 		    --disable-extras \
 		    --disable-tests \
 		    --disable-samples \
-		    --prefix=$DESTDIR/icu && \
+		    --prefix=$LIBSDIR/icu && \
         $GNUMAKE && $GNUMAKE install
+}
+
+clean_rebar()
+{
+    rm -rf $BUILDDIR/rebar
+    rm -rf $DESTDIR/tools/rebar
+}
+
+
+build_rebar()
+{
+    export PATH="$BUILDDIR/otp_src_$ERLANG_VER/bin:$PATH"
+    mkdir -p $BUILDDIR/rebar
+    echo "==> Fetch rebar"
+    $GITBIN clone $REBAR_MASTER $BUILDDIR/rebar
+    echo "==> build rebar"
+    cd $BUILDDIR/rebar
+    ./bootstrap
+    mkdir -p $DESTDIR/tools
+    cp $BUILDDIR/rebar/rebar $DESTDIR/tools/
 }
 
 build_all()
@@ -217,13 +239,15 @@ build_all()
     build_nspr
     build_js
     build_icu
+    build_rebar
 }
 
 
 clean_all()
 {
+    echo $DESTDIR
     rm -rf $DESTDIR
-    rm -rf $BUILDDIR
+    rm -rvf $BUILDDIR
 
 }
 
@@ -296,6 +320,12 @@ case "$1" in
         setup
         clean_icu
         build_icu
+        ;;
+    rebar)
+        shift 1
+        setup
+        clean_rebar
+        build_rebar
         ;;
     help|--help|-h|-?)
         usage
