@@ -93,9 +93,9 @@ fi
 
 case $SYSTEM in
     Darwin)
-        OTP_ENV+="--enable-darwin-64bit"
+        OTP_ENV="--enable-darwin-64bit"
         ;;
     *)
-        OTP_ENV+=""
+        OTP_ENV=""
         ;;
 esac

@@ -235,7 +235,8 @@ build_rebar()
     cd $BUILDDIR/rebar
     ./bootstrap
     mkdir -p $DESTDIR/tools
-    install -m 0755 -c $BUILDDIR/rebar/rebar $DESTDIR/tools/
+    cp $BUILDDIR/rebar/rebar $DESTDIR/tools/
+    chmod +x $DESTDIR/tools/rebar
 }
 
 clean_erica()
@@ -250,12 +251,13 @@ build_erica()
     export PATH="$BUILDDIR/otp_src_$ERLANG_VER/bin:$PATH"
     mkdir -p $BUILDDIR/erica
     echo "==> Fetch erica"
-    $GITBIN clone $ERICA_MASTER $BUILDDIR/eric&
+    $GITBIN clone $ERICA_MASTER $BUILDDIR/erica
     echo "==> build erica"
     cd $BUILDDIR/erica
-    make 
+    LDFLAGS=-LBUILDDIR/otp_src_$ERLANG_VER/bootstrap/lib make 
     mkdir -p $DESTDIR/tools
-    install -m 0755 -c $BUILDDIR/erica/erica $DESTDIR/tools/
+    cp $BUILDDIR/erica/erica $DESTDIR/tools/
+    chmod +x $DESTDIR/tools/erica
 }
 
 
@@ -358,7 +360,7 @@ case "$1" in
         shift 1
         setup
         clean_erica
-        build_eria
+        build_erica
         ;;
     help|--help|-h|-?)
         usage
