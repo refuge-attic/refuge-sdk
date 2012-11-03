@@ -75,9 +75,13 @@ build_openssl()
     cd $BUILDDIR/openssl-$OPENSSL_VER
     patch -p1 -i $PATCHES/openssl/pic.patch
 
-
-    CONF_ARGS=no-idea no-mdc2 no-rc5 zlib  enable-tlsext no-ssl2
-    ./Configure no-shared $CONF_ARGS $OPENSSL_PLATFORM
+    if [ "$SYSTEM" = "Linux" ]; then
+        echo "here"
+        ./config shared no-idea no-mdc2 no-rc5 zlib enable-tlsext no-ssl2
+    else
+        ./Configure no-shared $OPENSSL_PLATFORM
+    fi
+    make depend
     make
 
     mkdir -p $LIBSDIR/openssl/lib
@@ -102,8 +106,6 @@ build_otp()
     cd $BUILDDIR
     $GUNZIP -c $DISTDIR/$ERLANG_DISTNAME | $TAR xf -
 
-
-    mkdir $DESTDIR/otp_rel
     cd $BUILDDIR/otp_src_$ERLANG_VER
     ./otp_build configure \
         --disable-dynamic-ssl-lib \
