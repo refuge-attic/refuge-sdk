@@ -17,8 +17,8 @@ JS_VER=185-1.0.0
 JS_REALVER=1.8.5
 JS_DISTNAME=js$JS_VER.tar.gz
 JSDIR=$BUILDDIR/js-$JS_REALVER
-JS_LIBDIR=$DESTDIR/js/lib
-JS_INCDIR=$DESTDIR/js/include
+JS_LIBDIR=$LIBSDIR/js/lib
+JS_INCDIR=$LIBSDIR/js/include
 
 # icu sources
 ICU_VER=4.4.2
@@ -27,3 +27,6 @@ ICUDIR=$BUILDDIR/icu_src/icu
 
 # rebar
 REBAR_MASTER=git://github.com/refuge/rebar.git
+
+# erica
+ERICA_MASTER=git://github.com/benoitc/erica.git

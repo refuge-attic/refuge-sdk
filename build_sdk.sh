@@ -73,7 +73,11 @@ build_openssl()
 
     
     cd $BUILDDIR/openssl-$OPENSSL_VER
-    ./Configure no-shared $OPENSSL_PLATFORM
+    patch -p1 -i $PATCHES/openssl/pic.patch
+
+
+    CONF_ARGS=no-idea no-mdc2 no-rc5 zlib  enable-tlsext no-ssl2
+    ./Configure no-shared $CONF_ARGS $OPENSSL_PLATFORM
     make
 
     mkdir -p $LIBSDIR/openssl/lib
@@ -229,8 +233,29 @@ build_rebar()
     cd $BUILDDIR/rebar
     ./bootstrap
     mkdir -p $DESTDIR/tools
-    cp $BUILDDIR/rebar/rebar $DESTDIR/tools/
+    install -m 0755 -c $BUILDDIR/rebar/rebar $DESTDIR/tools/
 }
+
+clean_erica()
+{
+    rm -rf $BUILDDIR/erica
+    rm -rf $DESTDIR/tools/erica
+}
+
+
+build_erica()
+{
+    export PATH="$BUILDDIR/otp_src_$ERLANG_VER/bin:$PATH"
+    mkdir -p $BUILDDIR/erica
+    echo "==> Fetch erica"
+    $GITBIN clone $ERICA_MASTER $BUILDDIR/eric&
+    echo "==> build erica"
+    cd $BUILDDIR/erica
+    make 
+    mkdir -p $DESTDIR/tools
+    install -m 0755 -c $BUILDDIR/erica/erica $DESTDIR/tools/
+}
+
 
 build_all()
 {
@@ -326,6 +351,12 @@ case "$1" in
         setup
         clean_rebar
         build_rebar
+        ;;
+    erica)
+        shift 1
+        setup
+        clean_erica
+        build_eria
         ;;
     help|--help|-h|-?)
         usage
