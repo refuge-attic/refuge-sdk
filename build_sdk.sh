@@ -269,6 +269,7 @@ build_all()
     build_js
     build_icu
     build_rebar
+    build_erica
 }
 
 
