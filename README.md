@@ -12,19 +12,19 @@ Supported platforms are:
 
 ## Features
 
-The refuge SDK provides
+The refuge SDK provides for now:
 
 - Erlang R15B02 statically built with openssl 1.0.1c
-- Spidermonky 1.8.5
-- entop
+- rebar
 - Erica
 
 ## Installation 
 
-You can use one of the built release available on the Downloads
-repository:
+## Available builds (2012/01/04)
 
-    https://github.com/refuge/refuge-sdk/downloads
+- Macosx 10.6-10.8: [Refuge SDK Installer](http://dl.refuge.io/refuge-sdk-0.1.dmg)
+- Macosx 10.6-10.8: [Static archive](http://dl.refuge.io/refuge-sdk-Darwin-x86_64-0.1.tar.gz)
+- Linux 64: [Static archive](http://dl.refuge.io/refuge-sdk-Linux-x86_64-0.1.tar.gz)
 
 ### Installation from archives
 
@@ -43,6 +43,16 @@ You can install on macosx using the package. Just launch it and follow
 instructions. This package will install the Refuge SDK in
 /opt/refuge-sdk and ovveride your path to give you access to the tools
 and erlang.
+
+
+## Build the SDK
+
+The build of the SDK is fully automatized. To build an archive for your
+system run the following commands:
+
+    $ git clone git://github.com/refuge/refuge-sdk.git
+    $ cd refuge-sdk
+    $ ./build_sdk all
 
 ## License
 
