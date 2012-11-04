@@ -54,6 +54,10 @@ system run the following commands:
     $ cd refuge-sdk
     $ ./build_sdk all
 
+Notes:
+
+> to build the SDK you will need curl, git and libncurses installed.
+
 ## License
 
 The Refuge SDK is available in the public domain (see UNLICENSE). gaffer
