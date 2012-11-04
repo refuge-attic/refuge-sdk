@@ -290,7 +290,7 @@ clean_all()
 make_archive()
 {
     cd $DESTDIR/..
-    tar cvzf ../refuge-sdk-$MACHINE-$SYSTEM-$PKG_VERSION.tar.gz $DESTDIR
+    tar cvzf ../refuge-sdk-$SYSTEM-$MACHINE-$PKG_VERSION.tar.gz $DESTDIR
 }
 
 usage()
