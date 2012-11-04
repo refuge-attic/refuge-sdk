@@ -176,7 +176,7 @@ clean_all()
 {
     echo $DESTDIR
     rm -rf $DESTDIR
-    rm -rv $BUILDDIR
+    rm -rf $BUILDDIR
     rm -rf pkg
 
 }
