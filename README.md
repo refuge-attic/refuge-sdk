@@ -26,6 +26,24 @@ repository:
 
     https://github.com/refuge/refuge-sdk/downloads
 
+### Installation from archives
+
+You can install an archive where you want on your system. For example to
+install on your home folder:
+
+    $ cd ~ && tar xvzf refuge-sdk-<platform>-<arch>-<version>.tar.gz
+
+Then don't forget to finalize the installation
+
+    $ cd ~/refuge-sdk && ./tools/install.sh
+
+### Macosx Installation
+
+You can install on macosx using the package. Just launch it and follow
+instructions. This package will install the Refuge SDK in
+/opt/refuge-sdk and ovveride your path to give you access to the tools
+and erlang.
+
 ## License
 
 The Refuge SDK is available in the public domain (see UNLICENSE). gaffer
