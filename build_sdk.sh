@@ -75,8 +75,7 @@ build_openssl()
     cd $BUILDDIR/openssl-$OPENSSL_VER
     patch -p1 -i $PATCHES/openssl/pic.patch
 
-    if [ "$SYSTEM" = "Linux" ]; then
-        echo "here"
+    if [ "$SYSTEM" = "Linux" ] || [ "$SYSTEM" = "OpenBSD" ]; then
         ./config shared no-idea no-mdc2 no-rc5 zlib enable-tlsext no-ssl2
     else
         ./Configure no-shared $OPENSSL_PLATFORM

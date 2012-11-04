@@ -53,7 +53,7 @@ if ! test -n "$OPENSSL_PLATFORM"; then
         FreeBSD|OpenBSD|NetBSD)
             OPENSSL_PLATFORM="BSD-generic32"
 
-            if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "amd64" ]; then
+            if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "amd64" ]; then
                 OPENSSL_PLATFORM="BSD-generic64"
             fi
             ;;
