@@ -25,6 +25,8 @@ The refuge SDK provides for now:
 - Macosx 10.6-10.8: [Refuge SDK Installer](http://dl.refuge.io/refuge-sdk-0.2.dmg)
 - Macosx 10.6-10.8: [Static archive](http://dl.refuge.io/refuge-sdk-Darwin-x86_64-0.2.tar.gz)
 - Linux 64: [Static archive](http://dl.refuge.io/refuge-sdk-Linux-x86_64-0.2.tar.gz)
+- Linux 32: [Static archive](http://dl.refuge.io/refuge-sdk-Linux-i686-0.2.tar.gz)
+- OpenBSD i386: [Static archive](http://dl.refuge.io/refuge-sdk-OpenBSD-i386-0.2.tar.gz)
 
 ### Installation from archives
 
