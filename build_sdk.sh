@@ -34,7 +34,7 @@ REVISION=$(echo $SDK_TAG | sed -e 's/^$(REPO)-//')
 PKG_VERSION=$(echo $REVISION | tr - .)
 
 
-DESTDIR=$CURDIR/dest/refuge-sdk-$PKG_VERSION
+DESTDIR=$CURDIR/dest/refuge-sdk
 LIBSDIR=$DESTDIR/libs
 
 . support/env.sh
@@ -254,7 +254,7 @@ build_erica()
     $GITBIN clone $ERICA_MASTER $BUILDDIR/erica
     echo "==> build erica"
     cd $BUILDDIR/erica
-    LDFLAGS=-LBUILDDIR/otp_src_$ERLANG_VER/bootstrap/lib make 
+    make 
     mkdir -p $DESTDIR/tools
     cp $BUILDDIR/erica/erica $DESTDIR/tools/
     chmod +x $DESTDIR/tools/erica
