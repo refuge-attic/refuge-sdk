@@ -270,6 +270,11 @@ build_all()
     build_icu
     build_rebar
     build_erica
+
+    # miscellaneous
+
+    cp LICENSE UNLICENSE NOTICE README.md $DESTDIR/
+    cp scripts/* $DESTDIR/tools/
 }
 
 
@@ -281,6 +286,11 @@ clean_all()
 
 }
 
+make_archive()
+{
+    cd $DESTDIR/..
+    tar cvzf ../refuge-sdk-$MACHINE-$SYSTEM-$PKG_VERSION.tar.gz $DESTDIR
+}
 
 usage()
 {
@@ -306,7 +316,7 @@ if [ "x$1" = "x" ]; then
     clean_all
     setup
     build_all 
-
+    make_archive
     exit 0
 fi
 
@@ -315,11 +325,16 @@ case "$1" in
         shift 1
         clean_all
         setup
-        build_all 
+        build_all
+        make_archive 
         ;;
     clean)
         shift 1
         clean_all
+        ;;
+    archive)
+        shift 1
+        make_archive
         ;;
     openssl)
         shift 1
