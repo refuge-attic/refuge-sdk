@@ -102,11 +102,18 @@ build_otp()
 {
     fetch $ERLANG_DISTNAME $DOWNLOAD_URL
 
-    echo "==> Build Erlang $ERLANG_VER"
+    echo "==> Extract Erlang $ERLANG_VER"
     cd $BUILDDIR
     $GUNZIP -c $DISTDIR/$ERLANG_DISTNAME | $TAR xf -
 
     cd $BUILDDIR/otp_src_$ERLANG_VER
+
+    echo "==> Apply patches to Erlang $ERLANG_VER"
+    for P in $PATCHES/otp/patch-*; do \
+        (patch -p0 -i $P || echo "skipping patch"); \
+    done
+
+    echo "==> Build Erlang $ERLANG_VER"
     ./otp_build configure \
         --disable-dynamic-ssl-lib \
         --with-ssl=$LIBSDIR/openssl $OTP_ENV
