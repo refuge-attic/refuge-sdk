@@ -25,3 +25,5 @@ echo
 echo "You can override the PATH environment variable with the following value:"
 echo
 echo "\texport PATH=$SDK_TOP/tool:$OTPDIR/bin:$PATH"
+
+exit 0

@@ -5,5 +5,7 @@ export PATH
 
 /opt/refuge-sdk/tools/install.sh
 
-echo "# Added by the Refuge SDK" > ~/.bash_profile
-echo "export PATH=$PATH" > ~/.bash_profile
+echo "# Added by the Refuge SDK" >> ~/.bash_profile
+echo "export PATH=$PATH" >> ~/.bash_profile
+
+exit 0
