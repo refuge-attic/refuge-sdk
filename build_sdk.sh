@@ -270,13 +270,14 @@ build_all()
     build_icu
     build_rebar
     build_erica
+}
 
+finalize()
+{
     # miscellaneous
-
     cp LICENSE UNLICENSE NOTICE README.md $DESTDIR/
     cp scripts/* $DESTDIR/tools/
 }
-
 
 clean_all()
 {
@@ -315,7 +316,8 @@ EOF
 if [ "x$1" = "x" ]; then
     clean_all
     setup
-    build_all 
+    build_all
+    finalize 
     make_archive
     exit 0
 fi
@@ -326,6 +328,7 @@ case "$1" in
         clean_all
         setup
         build_all
+        finalize
         make_archive 
         ;;
     clean)
@@ -334,6 +337,7 @@ case "$1" in
         ;;
     archive)
         shift 1
+        finalize
         make_archive
         ;;
     openssl)
