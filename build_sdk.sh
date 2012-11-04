@@ -111,9 +111,10 @@ build_otp()
     for P in $PATCHES/otp/patch-*; do \
         (patch -p0 -i $P || echo "skipping patch"); \
     done
-
+     
     echo "==> Build Erlang $ERLANG_VER"
-    ./otp_build configure \
+
+    env LDFLAGS="$OTP_LDFLAGS" ./otp_build configure \
         --disable-dynamic-ssl-lib \
         --with-ssl=$LIBSDIR/openssl $OTP_ENV
     ./otp_build boot -a

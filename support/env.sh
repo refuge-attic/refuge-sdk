@@ -67,10 +67,23 @@ if ! test -n "$OPENSSL_PLATFORM"; then
 fi
 
 
+OTP_LDFLAGS=""
 case $SYSTEM in
     Darwin)
         OTP_ENV="--enable-darwin-64bit"
         ;;
+    OpenBSD)
+	OTP_ENV="--disable-jinterface \
+		--disable-odbc \
+		--enable-threads \
+		--enable-kernel-poll \
+		--disable-hipe \
+		--enable-smp-support"
+	if [ "$ARCH" = "i386" ]; then
+	    OTP_ENV="$OTP_ENV --enable-ethread-pre-pentium4-compatibility"
+	fi
+	OTP_LDFLAGS="$LDFLAGS -pthread"
+	;;
     *)
         OTP_ENV=""
         ;;
