@@ -30,30 +30,6 @@ case "$SYSTEM" in
         ;;
 esac
 
-
-# NSPR env
-NSPR_CONFIGURE_ENV=""
-NSPR_CFLAG=$CFLAGS
-case $SYSTEM in
-    Linux)
-        if [ "$ARCH" = "x86_64" ]; then
-            NSPR_CONFIGURE_ENV="--enable-64bit"
-        fi
-        NSPR_CFLAGS="$CFLAGS -lpthread"
-        ;;
-    FreeBSD|OpenBSD|NetBSD)
-        if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "amd64" ]; then
-            NSPR_CONFIGURE_ENV+=--enable-64bit
-        fi
-        ;;
-    Darwin)
-        if [ "$ISA64" = "1" ]; then
-            NSPR_CONFIGURE_ENV+=--enable-64bit
-        fi
-        ;;
-esac
-
-
 OPENSSL_PLATFORM=$OPENSSL_PLATFORM
 if ! test -n "$OPENSSL_PLATFORM"; then
     case $SYSTEM in

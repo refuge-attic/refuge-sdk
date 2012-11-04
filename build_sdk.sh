@@ -114,110 +114,6 @@ build_otp()
     ./otp_build release -a $LIBSDIR/otp_rel
 }
 
-clean_nspr()
-{
-    rm -rf $BUILDDIR/nspr*
-    rm -rf $LIBSDIR/nspr*
-}
-
-
-build_nspr()
-{
-    fetch $NSPR_DISTNAME $DOWNLOAD_URL
-
-    echo "==> build nspr"
-    cd $BUILDDIR
-    $GUNZIP -c $DISTDIR/$NSPR_DISTNAME | $TAR xf -
-
-    cd $BUILDDIR/nspr-$NSPR_VER/mozilla/nsprpub
-    ./configure --disable-debug --enable-optimize \
-        --prefix=$LIBSDIR/nsprpub $NSPR_CONFIGURE_ENV
-
-    $GNUMAKE all
-    $GNUMAKE install
-}
-
-clean_js()
-{
-    rm -rf $JSDIR
-    rm -rf $LIBSDIR/js
-}
-
-build_js()
-{
-
-    fetch $JS_DISTNAME $DOWNLOAD_URL
-
-    mkdir -p $JS_LIBDIR
-    mkdir -p $JS_INCDIR
-
-    cd $BUILDDIR
-    $GUNZIP -c $DISTDIR/$JS_DISTNAME | $TAR -xf -
-
-    echo "==> build js"
-    cd $JSDIR/js/src
-    patch -p0 -i $PATCHES/js/patch-jsprf_cpp
-	patch -p0 -i $PATCHES/js/patch-configure
-
-    env CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" \
-        CPPFLAGS="-DXP_UNIX -DJS_C_STRINGS_ARE_UTF8" \
-        ./configure --prefix=$LIBSDIR/js \
-				    --disable-debug \
-					--enable-optimize \
-					--enable-static \
-					--disable-shared-js \
-					--disable-tests \
-					--with-system-nspr \
-					--with-nspr-prefix=$LIBSDIR/nsprpub && \
-        $GNUMAKE all
-
-    mkdir -p $JS_INCDIR/js
-    cp $JSDIR/js/src/*.h $JS_INCDIR
-    cp $JSDIR/js/src/*.tbl $JS_INCDIR
-    cp $JSDIR/js/src/libjs_static.a $JS_LIBDIR
-}
-
-clean_icu()
-{
-    rm -rf $BUILDDIR/icu*
-    rm -rf $LIBSDIR/icu*
-}
-
-build_icu()
-{
-    fetch $ICU_DISTNAME $DOWNLOAD_URL
-
-    mkdir -p $ICUDIR
-
-    echo "==> build icu4c"
-
-    cd $BUILDDIR
-    $GUNZIP -c $DISTDIR/$ICU_DISTNAME | $TAR xf - -C $BUILDDIR/icu_src
-
-    # apply patches
-    cd $BUILDDIR/icu_src
-    for P in $PATCHES/icu/*.patch; do \
-        (patch -p0 -i $P || echo "skipping patch"); \
-    done
-
-    cd $ICUDIR/source
-
-    CFLAGS="-g -Wall -fPIC -Os"
-
-    env CC="gcc" CXX="g++" CPPFLAGS="" LDFLAGS="-fPIC" \
-	CFLAGS="$CFLAGS" CXXFLAGS="$CFLAGS" \
-        ./configure --disable-debug \
-		    --enable-static \
-		    --disable-shared \
-		    --disable-icuio \
-		    --disable-layout \
-		    --disable-extras \
-		    --disable-tests \
-		    --disable-samples \
-		    --prefix=$LIBSDIR/icu && \
-        $GNUMAKE && $GNUMAKE install
-}
-
 clean_rebar()
 {
     rm -rf $BUILDDIR/rebar
@@ -265,9 +161,6 @@ build_all()
 {
     build_openssl
     build_otp
-    build_nspr
-    build_js
-    build_icu
     build_rebar
     build_erica
 }
@@ -375,24 +268,6 @@ case "$1" in
         setup
         clean_otp
         build_otp
-        ;;
-    nspr)
-        shift 1
-        setup
-        clean_nspr
-        build_nspr
-        ;;
-    js)
-        shift 1
-        setup
-        clean_js
-        build_js
-        ;;
-    icu)
-        shift 1
-        setup
-        clean_icu
-        build_icu
         ;;
     rebar)
         shift 1
