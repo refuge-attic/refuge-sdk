@@ -283,7 +283,8 @@ clean_all()
 {
     echo $DESTDIR
     rm -rf $DESTDIR
-    rm -rvf $BUILDDIR
+    rm -rv $BUILDDIR
+    rm -rf pkg
 
 }
 
@@ -292,6 +293,25 @@ make_archive()
     cd $DESTDIR/..
     tar cvzf ../refuge-sdk-$SYSTEM-$MACHINE-$PKG_VERSION.tar.gz $DESTDIR
 }
+
+
+make_dmg()
+{
+    echo "==> Build DMG"
+    mkdir -p pkg
+
+    cp -f support/README.txt pkg/
+	cp -f LICENSE pkg/LICENSE.txt
+	cp -f support/dmg-background.png pkg/ 
+	cp -f support/setviewoptions.applescript pkg/
+	cp -f support/makedmg.sh pkg/
+	cp -f support/rcouch.icns pkg/
+	cd pkg
+	./makedmg.sh refuge-sdk-$PKG_VERSION.dmg \
+        "Refuge SDK Installer.pkg" "Refuge SDK Installer" \
+        dmg-background.png rcouch.icns	
+}
+
 
 usage()
 {
@@ -339,6 +359,10 @@ case "$1" in
         shift 1
         finalize
         make_archive
+        ;;
+    dmg)
+        shift 1
+        make_dmg
         ;;
     openssl)
         shift 1

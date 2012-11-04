@@ -6,3 +6,6 @@ clean:
 
 archive:
 	./build_sdk.sh archive
+
+dmg:
+	./build_sdk.sh dmg

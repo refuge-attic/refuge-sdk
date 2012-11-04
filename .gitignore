@@ -2,3 +2,5 @@ dists
 dest
 build
 *.gz
+*.pkg
+*.dmg
