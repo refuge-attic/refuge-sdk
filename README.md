@@ -15,8 +15,8 @@ Supported platforms are:
 The refuge SDK provides for now:
 
 - Erlang R15B02 statically built with openssl 1.0.1c
-- rebar
-- Erica
+- [Rebar](http://github.com/rebar/rebar)
+- [Erica](http://github.com/benoitc/erica)
 
 ## Installation 
 
